@@ -60,8 +60,20 @@ vercel --prod          # production deploy
 Zip the folder and drop it on vercel.com/new (CLI/GitHub recommended so the
 `/api` functions are detected).
 
-> No environment variables required. Node 18+ runtime (Vercel default) provides
-> global `fetch`, which the API functions rely on.
+> Node 18+ runtime (Vercel default) provides global `fetch`, which the API functions rely on.
+
+### Optional: LLM-powered assistant
+
+The Ritual Assistant chat works out of the box with a built-in knowledge base. To
+upgrade it to a live LLM, add a **free** Google Gemini key as an environment variable
+(never commit it):
+
+1. Get a free key at https://aistudio.google.com/app/apikey (no credit card).
+2. In Vercel → Project → **Settings → Environment Variables**, add:
+   - `GEMINI_API_KEY` = your key (Production)
+   - *(optional)* `GEMINI_MODEL` = `gemini-2.0-flash`
+3. Redeploy. If the key is missing or the call fails, the chat automatically falls
+   back to the knowledge base — it never breaks.
 
 ## Local preview
 
