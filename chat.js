@@ -62,11 +62,19 @@
     return 'I\'m not sure about that yet. Try asking about the <b>faucet / access code</b>, <b>deploy steps</b>, <b>network config</b>, <b>agent types</b>, or <b>agent status</b> — or join the <a href="https://discord.gg/mVRQXpteb" target="_blank" rel="noopener">Ritual Discord</a> for direct help.';
   }
 
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,(c)=>(
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  // Safe render for model output: escape everything, then linkify bare URLs only.
+  function linkify(text){
+    return esc(text).replace(/\n/g,'<br>').replace(/(https?:\/\/[^\s<]+)/g,
+      (u)=>`<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`);
+  }
   function addBot(html) {
     const d = document.createElement('div');
     d.className = 'cmsg bot';
-    d.innerHTML = html; // bot content is author-controlled (no user echo)
+    d.innerHTML = html; // KB content is author-controlled; model output goes through linkify()
     body.appendChild(d); body.scrollTop = body.scrollHeight;
+    return d;
   }
   function addMe(text) {
     const d = document.createElement('div');
@@ -75,18 +83,30 @@
     body.appendChild(d); body.scrollTop = body.scrollHeight;
   }
 
-  function submit() {
+  async function submit() {
     const q = (input.value || '').trim();
     if (!q) return;
     addMe(q); input.value = '';
-    setTimeout(() => addBot(answer(q)), 220);
+    const bubble = addBot('<span style="opacity:.6">…</span>');
+    try {
+      const r = await fetch('/api/agent-chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: q }),
+      });
+      const d = await r.json();
+      if (d && d.reply) bubble.innerHTML = linkify(d.reply);  // LLM answer (safe-rendered)
+      else bubble.innerHTML = answer(q);                       // fallback: local knowledge base
+    } catch {
+      bubble.innerHTML = answer(q);                            // network error -> local KB
+    }
+    body.scrollTop = body.scrollHeight;
   }
   function renderChips() {
     chips.innerHTML = '';
     CHIPS.forEach((c) => {
       const el = document.createElement('span');
       el.className = 'chip'; el.textContent = c;
-      el.addEventListener('click', () => { addMe(c); setTimeout(() => addBot(answer(c)), 200); });
+      el.addEventListener('click', () => { input.value = c; submit(); });
       chips.appendChild(el);
     });
   }
