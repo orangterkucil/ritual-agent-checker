@@ -23,7 +23,8 @@ module.exports = async (req, res) => {
       rpc('eth_getCode', [address, 'latest']),
       rpc('eth_blockNumber', []),
     ]);
-    res.setHeader('Cache-Control', 's-maxage=5, stale-while-revalidate=15');
+    // Privacy: never cache or persist address-keyed responses.
+    res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({
       address,
       balanceWei: bal.result || '0x0',

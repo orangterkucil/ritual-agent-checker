@@ -166,6 +166,14 @@
   <div class="panel section">
     <p class="ph">Deploy Your Own Agent</p>
     <details open>
+      <summary>⚡ Quick setup — one command (Linux / macOS / WSL / VPS)</summary>
+      <p class="hint" style="margin:6px 0">Installs Foundry + the Ritual skills kit. Touches no wallet or key.</p>
+      <pre>curl -fsSL https://raw.githubusercontent.com/orangterkucil/ritual-agent-checker/master/setup.sh | bash</pre>
+      <p class="hint">Prefer to review first? The script is in the repo as <code>setup.sh</code>. Or run the two lines manually:</p>
+      <pre>curl -L https://foundry.paradigm.xyz | bash &amp;&amp; foundryup
+git clone https://github.com/ritual-foundation/ritual-dapp-skills.git</pre>
+    </details>
+    <details>
       <summary>1 · Configure network</summary>
       <div class="kv" style="margin:8px 0">
         <div class="k">Chain ID</div><div class="v">1979</div>
