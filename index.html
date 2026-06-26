@@ -214,6 +214,23 @@
   </div>
 
 </div>
+<!-- CHAT ASSISTANT -->
+<div id="chatFab" class="chat-fab" title="Ask the Ritual Assistant" role="button" tabindex="0">◆</div>
+<div id="chatPanel" class="chat-panel" hidden>
+  <div class="chat-head">
+    <span class="chat-title">◆ RITUAL ASSISTANT</span>
+    <span class="chat-sub">on-chain helper · beta</span>
+    <button id="chatClose" class="chat-x" type="button" aria-label="Close">×</button>
+  </div>
+  <div id="chatBody" class="chat-body"></div>
+  <div class="chips" id="chatChips"></div>
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Ask about faucet, deploy, agents…" autocomplete="off" />
+    <button id="chatSend" type="button">▸</button>
+  </div>
+</div>
+
 <script src="app.js"></script>
+<script src="chat.js"></script>
 </body>
 </html>
