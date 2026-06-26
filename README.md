@@ -1,5 +1,7 @@
 # 🔮 Ritual Agent Checker
 
+**🌐 Live:** https://ritual-agent-checker.vercel.app
+
 A live web app to **check running Ritual agents, wallet balances, and claim from the faucet** —
 all data pulled straight from the official Ritual explorer and RPC. Includes a built-in
 "how to deploy your own agent" guide.
