@@ -59,7 +59,7 @@
       if (s > bestScore) { bestScore = s; best = e; }
     }
     if (best && bestScore >= 2) return best.a;
-    return 'I\'m not sure about that yet. Try asking about the <b>faucet / access code</b>, <b>deploy steps</b>, <b>network config</b>, <b>agent types</b>, or <b>agent status</b> — or join the <a href="https://discord.gg/mVRQXpteb" target="_blank" rel="noopener">Ritual Discord</a> for direct help.';
+    return 'I\'m the <b>Ritual Assistant</b> — I can only help with <b>Ritual Network</b>: agents, faucet / access code, deploy, network config and wallet/agent status. Ask me anything about Ritual. 🔮<br>Need a human? Join the <a href="https://discord.gg/mVRQXpteb" target="_blank" rel="noopener">Ritual Discord</a>.';
   }
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,(c)=>(
