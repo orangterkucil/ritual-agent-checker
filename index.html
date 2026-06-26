@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="referrer" content="no-referrer" />
+<title>RITUAL · Agent Console</title>
+<meta name="description" content="On-chain AI agent console for Ritual — live agents, wallet & faucet, straight from the Ritual explorer & RPC." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="corner tl"></div><div class="corner tr"></div>
+<div class="corner bl"></div><div class="corner br"></div>
+
+<div class="wrap">
+
+  <!-- HEADER + RITUAL LOGO -->
+  <div class="hdr">
+    <svg class="sigil" width="74" height="74" viewBox="0 0 100 100" fill="none" aria-label="Ritual logo">
+      <circle cx="50" cy="50" r="46" stroke="#39e6c8" stroke-opacity=".35" stroke-width="1"/>
+      <circle cx="50" cy="50" r="38" stroke="#39e6c8" stroke-opacity=".18" stroke-width="1" stroke-dasharray="3 4"/>
+      <!-- pentagram sigil -->
+      <path d="M50 14 L61.8 47.5 L91 47.5 L67.6 67.5 L77.5 92 L50 73 L22.5 92 L32.4 67.5 L9 47.5 L38.2 47.5 Z"
+            stroke="#39e6c8" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M50 30 L58 54 L41 54 Z" fill="#39e6c8" fill-opacity=".25" stroke="#39e6c8" stroke-width="1.5"/>
+    </svg>
+    <div class="word">RITUAL</div>
+    <div class="tag">Autonomous On-Chain Agent Console</div>
+    <div class="live"><span class="dot"></span><span id="liveTxt">LIVE SYNC · CHAIN 1979</span></div>
+  </div>
+
+  <!-- MAIN HUD -->
+  <div class="hud">
+
+    <!-- LEFT: AGENT STATUS -->
+    <div class="col">
+      <div class="panel">
+        <p class="ph">Agent Status</p>
+        <div class="chk"><span class="lbl">Identity</span><span class="val" id="cIdentity">—</span></div>
+        <div class="chk"><span class="lbl">Wallet Linked</span><span class="val" id="cWallet">—</span></div>
+        <div class="chk"><span class="lbl">Reputation</span><span class="val ok" id="cRep">—</span></div>
+        <div class="chk"><span class="lbl">Network</span><span class="val ok">RITUAL CHAIN</span></div>
+        <div class="chk"><span class="lbl">Role</span><span class="val" id="cRole">AUTONOMOUS</span></div>
+        <div class="chk"><span class="lbl">Agent State</span><span class="val" id="cState"><span class="pill none">—</span></span></div>
+      </div>
+
+      <div class="panel">
+        <p class="ph">TXN / Agent Feed</p>
+        <div class="feed" id="feed"><span class="hint">Syncing…</span></div>
+      </div>
+    </div>
+
+    <!-- CENTER: CONSOLE -->
+    <div class="col">
+      <div class="panel console">
+        <p class="ph">Wallet / Agent Lookup</p>
+        <div class="ring">
+          <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <circle cx="60" cy="60" r="54" stroke="#39e6c8" stroke-opacity=".25" stroke-width="1"/>
+            <circle cx="60" cy="60" r="44" stroke="#39e6c8" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="6 6">
+              <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="14s" repeatCount="indefinite"/>
+            </circle>
+            <path d="M60 30 L77 60 L60 90 L43 60 Z" stroke="#39e6c8" stroke-width="2" fill="rgba(57,230,200,.12)"/>
+            <text x="60" y="64" text-anchor="middle" fill="#39e6c8" font-size="11" letter-spacing="2" font-family="monospace">AGENT</text>
+          </svg>
+        </div>
+        <div class="search">
+          <input type="text" id="addr" placeholder="0x… wallet or agent address" spellcheck="false" autocomplete="off" />
+          <button id="checkBtn" type="button">Scan</button>
+        </div>
+        <div class="msg err" id="checkErr"></div>
+        <div id="checkRes" style="display:none;margin-top:14px">
+          <div class="big"><span id="balVal">0</span> <span class="unit">RITUAL</span></div>
+          <div class="kv" style="margin-top:14px">
+            <div class="k">Transactions</div><div class="v" id="rNonce">—</div>
+            <div class="k">Account type</div><div class="v" id="rType">—</div>
+            <div class="k">Agent class</div><div class="v" id="rClass">—</div>
+            <div class="k">Last heartbeat</div><div class="v" id="rHb">—</div>
+            <div class="k">Owner</div><div class="v" id="rOwner">—</div>
+            <div class="k">Address</div><div class="v mono" id="rAddr">—</div>
+          </div>
+          <a id="expLink" href="#" target="_blank" rel="noopener noreferrer"
+             style="display:inline-block;margin-top:12px;font-size:12px;letter-spacing:1px">VIEW ON EXPLORER ↗</a>
+        </div>
+      </div>
+
+      <!-- FAUCET -->
+      <div class="panel">
+        <p class="ph">Faucet · Mint Testnet RITUAL</p>
+        <p class="hint" id="faucetHint">Loading faucet config…</p>
+        <div class="search" style="margin-top:10px">
+          <input type="text" id="fAddr" placeholder="0x… receive address" spellcheck="false" autocomplete="off" />
+        </div>
+        <div class="search" style="margin-top:8px">
+          <input type="text" id="fCode" placeholder="Access code" spellcheck="false" autocomplete="off" />
+          <button id="fBtn" type="button">Mint</button>
+        </div>
+        <div class="msg" id="faucetMsg"></div>
+        <p class="hint" style="margin-top:10px">
+          Single-use, server-validated code. Get one via the official
+          <a href="https://discord.com/invite/ritual-net" target="_blank" rel="noopener noreferrer">Discord</a>,
+          a referral, or <code>hello@ritualfoundation.org</code>. No public code exists.
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT: METRICS -->
+    <div class="col">
+      <div class="panel">
+        <p class="ph">On-Chain Metrics</p>
+        <div class="kv">
+          <div class="k">Current block</div><div class="v" id="mBlock">—</div>
+          <div class="k">Persistent agents</div><div class="v ok" id="mPersist">—</div>
+          <div class="k">Sovereign agents</div><div class="v ok" id="mSov">—</div>
+          <div class="k">Total unique</div><div class="v" id="mTotal">—</div>
+          <div class="k">Alive now</div><div class="v ok" id="mAlive">—</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="ph">Nodes Active</p>
+        <div class="nodes">
+          <svg width="190" height="120" viewBox="0 0 190 120" fill="none">
+            <g stroke="#39e6c8" stroke-opacity=".4" stroke-width="1">
+              <line x1="40" y1="30" x2="95" y2="55"/><line x1="95" y1="55" x2="150" y2="30"/>
+              <line x1="95" y1="55" x2="60" y2="95"/><line x1="95" y1="55" x2="140" y2="92"/>
+              <line x1="40" y1="30" x2="60" y2="95"/>
+            </g>
+            <g fill="#39e6c8">
+              <rect x="34" y="24" width="12" height="12" transform="rotate(45 40 30)" opacity=".9"/>
+              <rect x="89" y="49" width="14" height="14" transform="rotate(45 96 56)"/>
+              <rect x="144" y="24" width="12" height="12" transform="rotate(45 150 30)" opacity=".9"/>
+              <rect x="54" y="89" width="12" height="12" transform="rotate(45 60 95)" opacity=".7"/>
+              <rect x="134" y="86" width="12" height="12" transform="rotate(45 140 92)" opacity=".7"/>
+            </g>
+          </svg>
+        </div>
+        <div class="kv"><div class="k">Executors</div><div class="v ok" id="mNodes">SYNCED</div></div>
+      </div>
+
+      <div class="panel">
+        <p class="ph">Agent Capabilities</p>
+        <div class="bar" data-cap="Data Ingestion" data-on="9"></div>
+        <div class="bar" data-cap="Smart Execution" data-on="8"></div>
+        <div class="bar" data-cap="Yield Strategy" data-on="6"></div>
+        <div class="bar" data-cap="Risk Analysis" data-on="7"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE AGENTS -->
+  <div class="panel section">
+    <p class="ph">Live Agent Registry</p>
+    <div class="tabs">
+      <div class="tab active" data-tab="persistent" id="tabP">Persistent</div>
+      <div class="tab" data-tab="sovereign" id="tabS">Sovereign</div>
+    </div>
+    <div class="search"><input type="text" id="filter" placeholder="Filter by address / owner…" autocomplete="off" /></div>
+    <div class="agents" id="agentList"><span class="hint">Loading…</span></div>
+  </div>
+
+  <!-- DEPLOY GUIDE -->
+  <div class="panel section">
+    <p class="ph">Deploy Your Own Agent</p>
+    <details open>
+      <summary>1 · Configure network</summary>
+      <div class="kv" style="margin:8px 0">
+        <div class="k">Chain ID</div><div class="v">1979</div>
+        <div class="k">RPC</div><div class="v">rpc.ritualfoundation.org</div>
+        <div class="k">Currency</div><div class="v">RITUAL (18 dec)</div>
+      </div>
+      Add the network and set up Foundry / Hardhat against Chain ID 1979.
+    </details>
+    <details>
+      <summary>2 · Get the skills kit</summary>
+      <pre>git clone https://github.com/ritual-foundation/ritual-dapp-skills.git \
+  .claude/skills/ritual-dapp-skills</pre>
+    </details>
+    <details>
+      <summary>3 · Fund RitualWallet</summary>
+      Claim from the faucet, then deposit into the RitualWallet system contract
+      <code>0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948</code> to cover precompile fees.
+    </details>
+    <details>
+      <summary>4 · Pick agent type</summary>
+      <ul>
+        <li><b>Sovereign</b> <code>0x080C</code> — runs on Scheduler wakeups.</li>
+        <li><b>Persistent</b> <code>0x0820</code> — container w/ memory + heartbeats.</li>
+      </ul>
+    </details>
+    <details>
+      <summary>5 · Deploy & schedule</summary>
+      <ol>
+        <li>Handle callbacks via AsyncDelivery <code>0x5A16214fF555848411544b005f7Ac063742f39F6</code>.</li>
+        <li>Deploy with <code>forge create</code>.</li>
+        <li>Register with Scheduler <code>0x56e776BAE2DD60664b69Bd5F865F1180ffB7D58B</code>.</li>
+      </ol>
+      Keep it funded (~0.1 RITUAL for heartbeats) and it appears ALIVE in the registry above.
+    </details>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="sig">
+    <div class="who">
+      Created by <b><a href="https://x.com/geografinist" target="_blank" rel="noopener noreferrer">@geografinist</a></b><br>
+      Discord: <b>geografinist</b><br>
+      <span class="hint">Unofficial community tool · testnet is experimental · not financial advice · DYOR</span>
+    </div>
+    <div class="mark">
+      Signature<br><span class="nm">RITUAL AI</span>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

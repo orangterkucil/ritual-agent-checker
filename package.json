@@ -1,0 +1,6 @@
+{
+  "name": "ritual-agent-checker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live checker for Ritual Network agents, wallets and faucet — data from the official explorer & RPC."
+}
