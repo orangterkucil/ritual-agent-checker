@@ -136,6 +136,25 @@ async function checkAddr(){
   finally{ btn.disabled=false; btn.textContent='Scan'; }
 }
 
+/* ---------- early access (Ritual Rites) ---------- */
+async function loadEarly(){
+  try{
+    const d = await (await fetch('/api/early')).json();
+    if(d.error) throw new Error(d.error);
+    $('eGifted').textContent = d.total_gifted!=null ? nfmt(d.total_gifted) : '—';
+    $('eChains').textContent = d.total_chains!=null ? nfmt(d.total_chains) : '—';
+    $('eCooldown').textContent = d.pending_cooldown!=null ? nfmt(d.pending_cooldown) : '—';
+    const rows = (d.recent||[]).slice(0,6).map((a)=>{
+      const depth = Number(a.chain_depth)||0;
+      return `<div class="frow"><span class="ic">◆</span><span class="h">new early pass</span>`
+        + `<span class="s ok">depth ${depth}</span></div>`;
+    }).join('');
+    $('eFeed').innerHTML = rows || '<span class="hint">No recent activations.</span>';
+  }catch{
+    $('eFeed').innerHTML = '<span class="hint">Could not load early-access stats.</span>';
+  }
+}
+
 /* ---------- faucet ---------- */
 async function loadFaucet(){
   try{
@@ -180,7 +199,9 @@ function init(){
   });
   loadAgents();
   loadFaucet();
+  loadEarly();
   setInterval(loadAgents,30000);
+  setInterval(loadEarly,45000);
 }
 function switchTab(t){
   TAB=t;
