@@ -202,6 +202,23 @@ git clone https://github.com/ritual-foundation/ritual-dapp-skills.git</pre>
   .claude/skills/ritual-dapp-skills</pre>
     </details>
     <details>
+      <summary>⚙ Prerequisites · API keys (for a running autonomous agent)</summary>
+      <p class="hint" style="margin:6px 0">A Sovereign/Persistent agent runs an LLM and stores its state on HuggingFace. All free, no credit card:</p>
+      <div class="kv" style="margin:6px 0">
+        <div class="k">LLM key (Gemini)</div><div class="v"><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">aistudio.google.com/app/apikey</a> → Create API key</div>
+        <div class="k">HuggingFace token</div><div class="v"><a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener noreferrer">huggingface.co/settings/tokens</a> → New (Write)</div>
+        <div class="k">HuggingFace dataset</div><div class="v"><a href="https://huggingface.co/new-dataset" target="_blank" rel="noopener noreferrer">huggingface.co/new-dataset</a> → e.g. <code>you/agent-workspace</code></div>
+      </div>
+      Set these as env vars (never commit them — keep in a chmod-600 file or shell env):
+      <pre>export RPC_URL="https://rpc.ritualfoundation.org"
+export PRIVATE_KEY="0x..."             # your funded wallet key
+export GEMINI_API_KEY="..."            # exactly one LLM key (or OPENAI/OPENROUTER)
+export MODEL="gemini-2.5-flash"
+export HF_TOKEN="hf_..."
+export HF_REPO_ID="you/agent-workspace"</pre>
+      Then run an example: <code>bash examples/sovereign-agent/run.sh</code>
+    </details>
+    <details>
       <summary>3 · Fund RitualWallet</summary>
       Claim from the faucet, then deposit into the RitualWallet system contract
       <code>0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948</code> to cover precompile fees.
@@ -224,6 +241,39 @@ git clone https://github.com/ritual-foundation/ritual-dapp-skills.git</pre>
     </details>
   </div>
 
+  <!-- CLAIM EARLY PASS -->
+  <div class="panel section">
+    <p class="ph">Claim Your Early Pass</p>
+    <p class="hint" style="margin-bottom:10px">The early pass links to your wallet + Discord. Order matters: your agent must succeed on-chain first, then you claim.</p>
+    <details open>
+      <summary>1 · Deploy & run your agent (required first)</summary>
+      Your agent must run successfully so your wallet appears on-chain as an agent. Use the
+      “Deploy Your Own Agent” guide above. Until it’s live, claim won’t recognize you.
+    </details>
+    <details>
+      <summary>2 · Claim on the Ritual Map</summary>
+      Open <a href="https://www.ritualmap.net/" target="_blank" rel="noopener noreferrer">ritualmap.net</a>
+      in your browser → connect your wallet → your agent appears → follow the claim / early-pass
+      prompt linked to your Discord.
+    </details>
+    <details>
+      <summary>3 · Or claim the Genesis role in Discord</summary>
+      In the official <a href="https://discord.gg/mVRQXpteb" target="_blank" rel="noopener noreferrer">Ritual Discord</a>,
+      the Genesis role is for the first 1,000 agent deployers — verify with the same wallet you deployed from.
+    </details>
+    <details>
+      <summary>4 · Check the official agents dashboard</summary>
+      <a href="https://agents.ritualfoundation.org/" target="_blank" rel="noopener noreferrer">agents.ritualfoundation.org</a>
+      may show your pass status and a claim option once your agent is recognized.
+    </details>
+    <p class="hint" style="margin-top:10px">
+      Refs: <a href="https://docs.ritualfoundation.org/" target="_blank" rel="noopener noreferrer">Docs</a> ·
+      <a href="https://agents.ritualfoundation.org/" target="_blank" rel="noopener noreferrer">Agents</a> ·
+      <a href="https://faucet.ritualfoundation.org/" target="_blank" rel="noopener noreferrer">Faucet</a> ·
+      <a href="https://www.ritualmap.net/" target="_blank" rel="noopener noreferrer">Map</a>
+    </p>
+  </div>
+
   <!-- SIGNATURE -->
   <div class="sig">
     <div class="who">
@@ -235,8 +285,7 @@ git clone https://github.com/ritual-foundation/ritual-dapp-skills.git</pre>
       <a href="https://x.com/ritualfnd" target="_blank" rel="noopener noreferrer">@ritualfnd</a> ·
       <a href="https://discord.gg/mVRQXpteb" target="_blank" rel="noopener noreferrer">Discord</a><br>
       Created by <b><a href="https://x.com/geografinist" target="_blank" rel="noopener noreferrer">@geografinist</a></b>
-      · <a href="https://github.com/orangterkucil" target="_blank" rel="noopener noreferrer">GitHub</a>
-      · Discord <b>geografinist</b><br>
+      · <a href="https://github.com/orangterkucil" target="_blank" rel="noopener noreferrer">GitHub</a><br>
       <span class="hint">Unofficial community tool · testnet is experimental · not financial advice · DYOR</span>
     </div>
     <div class="mark">
