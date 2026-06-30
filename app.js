@@ -53,6 +53,54 @@ function findAgent(addr){
   if(s) return {kind:'sovereign', ...s};
   return null;
 }
+// match a wallet that OWNS a persistent agent (so a deployer sees their agent)
+function findOwnedAgent(addr){
+  if(!CACHE) return null;
+  const a=addr.toLowerCase();
+  const p=(CACHE.persistent||[]).find((x)=>x.info && String(x.info.owner||'').toLowerCase()===a);
+  return p ? {kind:'persistent', ...p, ownedBy:addr} : null;
+}
+
+// lifecycle/status bar derived from RPC + explorer (verified, not guessed)
+function renderLifecycle(w, ag){
+  const box=$('lifecycle'); if(!box) return;
+  let funded=false; try{ funded = BigInt(w.balanceWei||'0x0') > 0n; }catch{}
+  const nonce=hexToInt(w.nonce);
+  const isContract=w.code && w.code!=='0x';
+  const deployed=isContract || nonce>0;
+  const registered=!!ag;
+  const cur=(CACHE&&CACHE.currentBlock)||0;
+  let alive=false, hb=false, stateLabel='NOT REGISTERED', stateCls='none';
+  if(ag){
+    if(ag.kind==='persistent'){
+      const i=ag.info||{}; alive=!!i.isAlive;
+      const a=cur-(i.lastHeartbeatBlock||0); hb=alive && a>=0 && a<2000;
+      stateLabel=alive?'ALIVE':'DOWN'; stateCls=alive?'alive':'down';
+    } else {
+      const a=cur-(ag.lastActivityBlock||0); alive=a>=0 && a<5000; hb=a>=0 && a<2000;
+      stateLabel=alive?'ACTIVE':'IDLE'; stateCls=alive?'alive':'idle';
+    }
+  }
+  const steps=[
+    {l:'Funded',ok:funded},
+    {l:'Deployed',ok:deployed},
+    {l:'Registered',ok:registered},
+    {l:'Alive',ok:alive},
+    {l:'Heartbeat',ok:hb},
+  ];
+  const firstTodo=steps.findIndex((s)=>!s.ok);
+  const stepsHtml=steps.map((s,idx)=>{
+    const cls = s.ok ? 'done' : (idx===firstTodo ? 'active' : '');
+    const mark = s.ok ? '✓' : (idx===firstTodo ? '●' : '');
+    return `<div class="lc-step ${cls}"><span class="lc-dot">${mark}</span><span class="lc-lbl">${esc(s.l)}</span></div>`;
+  }).join('');
+  const done=steps.filter((s)=>s.ok).length;
+  box.innerHTML = `<div class="lc-head">`
+    + `<span class="lc-lbl" style="font-size:11px">Agent lifecycle · ${done}/5</span>`
+    + `<span class="lc-state ${stateCls}">${esc(stateLabel)}</span></div>`
+    + `<div class="lc-steps">${stepsHtml}</div>`;
+}
+
 function renderFeed(){
   if(!CACHE) return;
   const cur=CACHE.currentBlock||0;
@@ -112,7 +160,8 @@ async function checkAddr(){
     $('cWallet').innerHTML='<span class="ok">LINKED ✓</span>';
     $('cRep').textContent='A+';
 
-    const ag=findAgent(addr); const cur=(CACHE&&CACHE.currentBlock)||0;
+    const ag=findAgent(addr) || findOwnedAgent(addr); const cur=(CACHE&&CACHE.currentBlock)||0;
+    renderLifecycle(w, ag);
     if(!ag){
       $('rClass').textContent='—'; $('rHb').textContent='—'; $('rOwner').textContent='—';
       $('cState').innerHTML='<span class="pill none">NOT REGISTERED</span>';
